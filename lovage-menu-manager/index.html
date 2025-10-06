@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>Lovage</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="title">
+      <img class="logo" src="assets/LovageLogo.png" />
+    </div>
+    <div class="nav">
+      <ul class="nav__items">
+        <!-- <li class="nav__item nav__link"><a href="about.html">About</a></li> -->
+        <li class="nav__item nav__link">
+          <a
+            href="https://resy.com/cities/strtf/lovage?date=2022-11-13&seats=2"
+            target="_blank"
+            >Reservations</a
+          >
+        </li>
+        <!-- <li class="nav__item nav__link"><a href="events.html">Events</a></li> -->
+        <li class="nav__item nav__link">
+          <a href="#connect-with-us">Contact</a>
+        </li>
+      </ul>
+    </div>
+    <div class="slogan__section">
+      <div class="slogan__container">
+        <p>
+          Your neighbourhood restaurant and wine bar.<br /><br />
+          A nice place to enjoy honest food and drink well.
+        </p>
+      </div>
+    </div>
+    <div class="menu-section">
+      <h3 class="menu-title">
+        Menus change often. This is a sample of what we are doing these days.
+      </h3>
+      <div class="menu-container">
+        <div class="menu-item">
+          <h4 class="menu-header">Lunch</h4>
+          <img
+            class="menu-img"
+            src="./assets/lunch.png"
+            alt="Lovage lunch menu"
+          />
+        </div>
+        <div class="menu-item">
+          <h4 class="menu-header">Dinner</h4>
+          <img
+            class="menu-img"
+            src="./assets/dinner.png"
+            alt="Lovage dinner menu"
+          />
+        </div>
+      </div>
+      <div class="divider"></div>
+    </div>
+    <div class="contact" id="contact">
+      <div class="map__container">
+        <div class="map-address">
+          <a
+            href="https://www.google.com/maps/place/LOVAGE/@43.3694746,-80.9854593,17z/data=!3m1!4b1!4m6!3m5!1s0x882ead84a2690deb:0x9c8658c5c9967a1!8m2!3d43.3694707!4d-80.9832706!16s%2Fg%2F11t29fqlz6"
+            target="_blank"
+            ><img class="map-img" src="assets/lovagemap.png"
+          /></a>
+          <h4>
+            <a
+              href="https://www.google.com/maps/place/LOVAGE/@43.3694746,-80.9854593,17z/data=!3m1!4b1!4m6!3m5!1s0x882ead84a2690deb:0x9c8658c5c9967a1!8m2!3d43.3694707!4d-80.9832706!16s%2Fg%2F11t29fqlz6"
+              target="_blank"
+              >72 Wellington St. Stratford, ON</a
+            >
+          </h4>
+        </div>
+        <div class="hours">
+          <h2>Hours<br /><br /></h2>
+          <h4>Tuesday: 5pm to 10pm</h4>
+          <br />
+          <h4>Wednesday: 12pm to 3pm <br />5pm to 10pm</h4>
+          <br />
+          <h4>
+            Thursday: 12pm to 3pm <br />
+            5pm to 10pm
+          </h4>
+          <br />
+          <h4>
+            Friday: 12pm to 3pm <br />
+            5pm to 10pm
+          </h4>
+          <br />
+          <h4>
+            Saturday: 12pm to 3pm <br />
+            5pm to 10pm
+          </h4>
+          <br />
+          <h4>Sunday: Closed</h4>
+          <br />
+          <h4>Monday: Closed</h4>
+          <br />
+        </div>
+      </div>
+      <div class="connect-with-us" id="connect-with-us">
+        <!-- <h2>Connect with us!</h2> -->
+        <div class="contact-info">
+          <h4><a href="tel:5193051999">(519)-305-1999</a></h4>
+          <h4>
+            <a href="mailto:contact@lovagestratford.com"
+              >contact@lovagestratford.com</a
+            >
+          </h4>
+        </div>
+        <div class="socials">
+          <a
+            class="social-link"
+            href="https://www.facebook.com/prettygoodpizzastratford/"
+            target="_blank"
+            ><ion-icon name="logo-facebook"></ion-icon
+          ></a>
+          <a
+            class="social-link"
+            href="https://www.instagram.com/lovagestratford/?hl=en"
+            target="_blank"
+            ><ion-icon name="logo-instagram"></ion-icon
+          ></a>
+        </div>
+      </div>
+    </div>
+    <footer></footer>
+
+    <script src="app.js"></script>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+    <script>
+      async function loadMenuImages() {
+        const response = await fetch("/menus");
+        const urls = await response.json();
+
+        document.querySelector('img[alt="Lovage lunch menu"]').src = urls.lunch;
+        document.querySelector('img[alt="Lovage dinner menu"]').src =
+          urls.dinner;
+      }
+
+      loadMenuImages();
+    </script>
+  </body>
+</html>

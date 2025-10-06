@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document Manager</title>
+    <style>
+      body {
+        background-color: #1b3b2b;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .upload-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #f7f6e9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        color: #1b3b2b;
+        margin-bottom: 20px;
+      }
+
+      .upload-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .upload-form input[type="file"] {
+        padding: 10px;
+        border: 1px solid #b4b3a6;
+        border-radius: 4px;
+        background-color: white;
+      }
+
+      .upload-form button {
+        padding: 10px 20px;
+        background-color: #1b3b2b;
+        color: #f7f6e9;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .upload-form button:hover {
+        background-color: #2c5c44;
+      }
+
+      .message {
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 4px;
+        opacity: 0;
+        transform: translateY(-10px);
+        animation: slideIn 0.3s forwards;
+      }
+
+      @keyframes slideIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .success {
+        background-color: #dff0d8;
+        color: #3c763d;
+        border: 1px solid #d6e9c6;
+      }
+
+      .error {
+        background-color: #f2dede;
+        color: #a94442;
+        border: 1px solid #ebccd1;
+      }
+
+      .reset-button {
+        margin-top: 20px;
+        background-color: #dc3545;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .reset-button:hover {
+        background-color: #c82333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="upload-container">
+      <h2>Document Manager</h2>
+      <form class="upload-form" id="uploadForm">
+        <input type="file" name="document" required />
+        <select name="menuType" required>
+          <option value="lunch">Lunch Menu</option>
+          <option value="dinner">Dinner Menu</option>
+        </select>
+        <button type="submit">Upload</button>
+      </form>
+      <button id="resetButton" class="reset-button">
+        Reset to Default Menus
+      </button>
+      <div id="message"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById("uploadForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+          const messageDiv = document.getElementById("message");
+
+          try {
+            const response = await fetch("/upload", {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              messageDiv.className = "message success";
+              messageDiv.textContent = data.message;
+              e.target.reset(); // Clear the form
+            } else {
+              messageDiv.className = "message error";
+              messageDiv.textContent = data.error;
+            }
+          } catch (error) {
+            messageDiv.className = "message error";
+            messageDiv.textContent = "An error occurred during upload";
+            console.error("Upload error:", error);
+          }
+        });
+
+      const fileInput = document.querySelector('input[type="file"]');
+      const previewDiv = document.createElement("div");
+      previewDiv.className = "file-preview";
+      fileInput.after(previewDiv);
+
+      fileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.type.startsWith("image/")) {
+          const img = document.createElement("img");
+          img.src = URL.createObjectURL(file);
+          img.style.maxWidth = "200px";
+          previewDiv.innerHTML = "";
+          previewDiv.appendChild(img);
+        } else {
+          previewDiv.textContent = `Selected: ${file.name}`;
+        }
+      });
+
+      document
+        .getElementById("resetButton")
+        .addEventListener("click", async () => {
+          const messageDiv = document.getElementById("message");
+
+          if (
+            !confirm(
+              "Are you sure you want to reset to default menus? This will delete the current menus."
+            )
+          ) {
+            return;
+          }
+
+          try {
+            const response = await fetch("/reset-menus", {
+              method: "POST",
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              messageDiv.className = "message success";
+              messageDiv.textContent = data.message;
+            } else {
+              messageDiv.className = "message error";
+              messageDiv.textContent = data.error;
+            }
+          } catch (error) {
+            messageDiv.className = "message error";
+            messageDiv.textContent = "An error occurred during reset";
+            console.error("Reset error:", error);
+          }
+        });
+    </script>
+  </body>
+</html>
