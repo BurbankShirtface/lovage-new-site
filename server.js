@@ -136,13 +136,14 @@ app.post(
       console.log("Uploading menu type:", menuType);
 
       // Validate menu type
-      if (!['lunch', 'dinner', 'drinks'].includes(menuType)) {
-        return res.status(400).json({ error: "Invalid menu type. Must be 'lunch', 'dinner', or 'drinks'" });
+      if (!["lunch", "dinner", "drinks"].includes(menuType)) {
+        return res.status(400).json({
+          error: "Invalid menu type. Must be 'lunch', 'dinner', or 'drinks'",
+        });
       }
 
-      // Create timestamp for unique filename
-      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const fileName = `${menuType}-${timestamp}.jpg`;
+      // Use consistent filename that matches retrieval system
+      const fileName = `${menuType}-menu.jpg`;
       const storageRef = ref(storage, `menus/${fileName}`);
 
       console.log("Uploading to path:", `menus/${fileName}`);
@@ -157,7 +158,7 @@ app.post(
         url: downloadURL,
         fileName: fileName,
         menuType: menuType,
-        uploadedAt: new Date().toISOString()
+        uploadedAt: new Date().toISOString(),
       });
     } catch (error) {
       console.error("Upload error:", error);
@@ -199,33 +200,39 @@ app.get("/menus", async (req, res) => {
 
     // Return data in the new format expected by the frontend
     const response = {};
-    
+
     if (lunchURL) {
-      response.lunch = [{
-        url: lunchURL,
-        uploadedAt: new Date().toISOString(),
-        name: "lunch-menu.jpg"
-      }];
+      response.lunch = [
+        {
+          url: lunchURL,
+          uploadedAt: new Date().toISOString(),
+          name: "lunch-menu.jpg",
+        },
+      ];
     } else {
       response.lunch = [];
     }
-    
+
     if (dinnerURL) {
-      response.dinner = [{
-        url: dinnerURL,
-        uploadedAt: new Date().toISOString(),
-        name: "dinner-menu.jpg"
-      }];
+      response.dinner = [
+        {
+          url: dinnerURL,
+          uploadedAt: new Date().toISOString(),
+          name: "dinner-menu.jpg",
+        },
+      ];
     } else {
       response.dinner = [];
     }
-    
+
     if (drinksURL) {
-      response.drinks = [{
-        url: drinksURL,
-        uploadedAt: new Date().toISOString(),
-        name: "drinks-menu.jpg"
-      }];
+      response.drinks = [
+        {
+          url: drinksURL,
+          uploadedAt: new Date().toISOString(),
+          name: "drinks-menu.jpg",
+        },
+      ];
     } else {
       response.drinks = [];
     }
@@ -239,7 +246,7 @@ app.get("/menus", async (req, res) => {
       details: "Failed to retrieve menu images",
       lunch: [],
       dinner: [],
-      drinks: []
+      drinks: [],
     });
   }
 });
