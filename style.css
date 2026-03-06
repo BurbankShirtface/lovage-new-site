@@ -135,6 +135,26 @@ h6 {
   display: none;
 }
 
+/* Order Here button in nav - warm accent to stand out */
+.nav-order-btn {
+  background: linear-gradient(135deg, #d4a84b, #b8923a);
+  color: #143d2c;
+  padding: 0.5rem 1.5rem;
+  border-radius: 25px;
+  font-weight: 500;
+  border: 2px solid transparent;
+}
+
+.nav-order-btn:hover {
+  background: transparent;
+  color: #f7f6e9;
+  border-color: #d4a84b;
+}
+
+.nav-order-btn::after {
+  display: none;
+}
+
 /* Hero Section */
 .hero {
   min-height: 60vh;
@@ -407,10 +427,41 @@ h6 {
   }
 }
 
-/* Reservation Button */
+/* Reservation & Order buttons */
 .reservation-section {
   margin: 2rem 0;
   text-align: center;
+}
+
+.reservation-section.cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.order-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #d4a84b, #b8923a);
+  color: #143d2c;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(212, 168, 75, 0.3);
+  border: 2px solid transparent;
+}
+
+.order-btn:hover {
+  background: linear-gradient(135deg, #e4b85b, #c9a04a);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 168, 75, 0.4);
+  border-color: #f7f6e9;
+  color: #143d2c;
 }
 
 .reservation-btn {
@@ -605,7 +656,8 @@ h6 {
     padding: 0.5rem 1rem;
   }
 
-  .nav a[href*="resy.com"] {
+  .nav a[href*="resy.com"],
+  .nav-order-btn {
     padding: 0.6rem 1.2rem;
     font-size: 0.95rem;
   }
@@ -713,9 +765,20 @@ h6 {
     min-width: fit-content;
   }
 
-  .nav a[href*="resy.com"] {
+  .nav a[href*="resy.com"],
+  .nav-order-btn {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
+  }
+
+  .nav a[href*="resy.com"] {
+    order: -2;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.25rem;
+  }
+
+  .nav-order-btn {
     order: -1;
     width: 100%;
     text-align: center;
@@ -787,7 +850,9 @@ h6 {
 /* Focus styles for accessibility */
 .nav a:focus,
 .contact-link:focus,
-.social-link:focus {
+.social-link:focus,
+.order-btn:focus,
+.reservation-btn:focus {
   outline: 2px solid #b4b3a6;
   outline-offset: 2px;
 }
