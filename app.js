@@ -86,8 +86,8 @@ async function loadAllMenus() {
 
     const menuData = await response.json();
 
-    // Render each menu type
-    ["lunch", "dinner", "drinks"].forEach((type) => {
+    // Render each visible menu type
+    ["lunch", "dinner"].forEach((type) => {
       if (menuData[type]) {
         renderMenu(type, menuData[type]);
       } else {
@@ -101,8 +101,8 @@ async function loadAllMenus() {
     });
   } catch (error) {
     console.error("Error loading menus:", error);
-    // Show fallback content for all menu types
-    ["lunch", "dinner", "drinks"].forEach((type) => {
+    // Show fallback content for all visible menu types
+    ["lunch", "dinner"].forEach((type) => {
       renderMenu(type, []);
     });
     document.querySelectorAll(".menu-block").forEach((block) => {
