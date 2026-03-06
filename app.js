@@ -94,11 +94,19 @@ async function loadAllMenus() {
         renderMenu(type, []);
       }
     });
+
+    // Mark all blocks as loaded so first open on mobile never re-renders (avoids flash)
+    document.querySelectorAll(".menu-block").forEach((block) => {
+      block.dataset.loaded = "true";
+    });
   } catch (error) {
     console.error("Error loading menus:", error);
     // Show fallback content for all menu types
     ["lunch", "dinner", "drinks"].forEach((type) => {
       renderMenu(type, []);
+    });
+    document.querySelectorAll(".menu-block").forEach((block) => {
+      block.dataset.loaded = "true";
     });
   }
 }
