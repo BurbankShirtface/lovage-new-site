@@ -29,7 +29,7 @@ function initializeMenus() {
 
     console.log(`Setting up menu ${index + 1}: ${menuType}`);
 
-    header.addEventListener("click", async (e) => {
+    header.addEventListener("click", (e) => {
       e.preventDefault();
       console.log(`Clicked on ${menuType} menu`);
 
@@ -56,21 +56,21 @@ function initializeMenus() {
         }
       });
 
-      // Load menu content first if not already loaded, so the open animation is smooth
-      if (!block.dataset.loaded) {
-        const gridType = block.querySelector(".menu-grid").dataset.type;
-        console.log(`Loading content for ${gridType} menu`);
-        await loadMenuType(gridType);
-        block.dataset.loaded = "true";
-      }
-
-      // Open current block after content is ready
+      // Open current block (content already loaded on page load via loadAllMenus)
       console.log(`Opening ${menuType} menu`);
       block.classList.add("open");
 
       // Update icon rotation
       if (icon) {
         icon.style.transform = "rotate(45deg)";
+      }
+
+      // Load this menu type if not yet loaded (runs in background, no wait)
+      if (!block.dataset.loaded) {
+        const gridType = block.querySelector(".menu-grid").dataset.type;
+        console.log(`Loading content for ${gridType} menu`);
+        loadMenuType(gridType);
+        block.dataset.loaded = "true";
       }
     });
   });
@@ -635,13 +635,12 @@ function refreshFoodGallery() {
   }, 500);
 }
 
-// Add touch interactions for mobile/tablet devices
+// Add touch interactions for mobile/tablet devices (only one item shows info at a time)
 function addTouchInteractions(container) {
   const galleryItems = container.querySelectorAll(".gallery-item");
   const isTouchDevice = () => window.matchMedia("(hover: none)").matches;
 
   galleryItems.forEach((item) => {
-    let isDescriptionVisible = false;
     let lastTouchEnd = 0;
 
     // On touch devices, handle touchend and mark time so we ignore the synthetic click
@@ -651,8 +650,11 @@ function addTouchInteractions(container) {
         if (!isTouchDevice()) return;
         e.preventDefault();
         lastTouchEnd = Date.now();
-        isDescriptionVisible = !isDescriptionVisible;
-        item.classList.toggle("touch-active", isDescriptionVisible);
+        // Close any other item that's showing info, then toggle this one
+        galleryItems.forEach((other) => {
+          if (other !== item) other.classList.remove("touch-active");
+        });
+        item.classList.toggle("touch-active");
       },
       { passive: false }
     );
@@ -664,8 +666,10 @@ function addTouchInteractions(container) {
         return;
       }
       if (!isTouchDevice()) {
-        isDescriptionVisible = !isDescriptionVisible;
-        item.classList.toggle("touch-active", isDescriptionVisible);
+        galleryItems.forEach((other) => {
+          if (other !== item) other.classList.remove("touch-active");
+        });
+        item.classList.toggle("touch-active");
       }
     });
   });
