@@ -29,7 +29,7 @@ function initializeMenus() {
 
     console.log(`Setting up menu ${index + 1}: ${menuType}`);
 
-    header.addEventListener("click", (e) => {
+    header.addEventListener("click", async (e) => {
       e.preventDefault();
       console.log(`Clicked on ${menuType} menu`);
 
@@ -56,21 +56,21 @@ function initializeMenus() {
         }
       });
 
-      // Open current block
+      // Load menu content first if not already loaded, so the open animation is smooth
+      if (!block.dataset.loaded) {
+        const gridType = block.querySelector(".menu-grid").dataset.type;
+        console.log(`Loading content for ${gridType} menu`);
+        await loadMenuType(gridType);
+        block.dataset.loaded = "true";
+      }
+
+      // Open current block after content is ready
       console.log(`Opening ${menuType} menu`);
       block.classList.add("open");
 
       // Update icon rotation
       if (icon) {
         icon.style.transform = "rotate(45deg)";
-      }
-
-      // Load menu content if not already loaded
-      if (!block.dataset.loaded) {
-        const menuType = block.querySelector(".menu-grid").dataset.type;
-        console.log(`Loading content for ${menuType} menu`);
-        loadMenuType(menuType);
-        block.dataset.loaded = "true";
       }
     });
   });
@@ -638,25 +638,34 @@ function refreshFoodGallery() {
 // Add touch interactions for mobile/tablet devices
 function addTouchInteractions(container) {
   const galleryItems = container.querySelectorAll(".gallery-item");
+  const isTouchDevice = () => window.matchMedia("(hover: none)").matches;
 
   galleryItems.forEach((item) => {
     let isDescriptionVisible = false;
+    let lastTouchEnd = 0;
 
-    // Add click/tap event listener
-    item.addEventListener("click", (e) => {
-      // Only handle touch interactions on mobile/tablet (no hover support)
-      if (window.matchMedia("(hover: none)").matches) {
+    // On touch devices, handle touchend and mark time so we ignore the synthetic click
+    item.addEventListener(
+      "touchend",
+      (e) => {
+        if (!isTouchDevice()) return;
         e.preventDefault();
+        lastTouchEnd = Date.now();
+        isDescriptionVisible = !isDescriptionVisible;
+        item.classList.toggle("touch-active", isDescriptionVisible);
+      },
+      { passive: false }
+    );
 
-        if (isDescriptionVisible) {
-          // Show image, hide description
-          item.classList.remove("touch-active");
-          isDescriptionVisible = false;
-        } else {
-          // Hide image, show description
-          item.classList.add("touch-active");
-          isDescriptionVisible = true;
-        }
+    // Click: on touch devices ignore if we just handled a touch (avoids double toggle)
+    item.addEventListener("click", (e) => {
+      if (isTouchDevice() && Date.now() - lastTouchEnd < 400) {
+        e.preventDefault();
+        return;
+      }
+      if (!isTouchDevice()) {
+        isDescriptionVisible = !isDescriptionVisible;
+        item.classList.toggle("touch-active", isDescriptionVisible);
       }
     });
   });

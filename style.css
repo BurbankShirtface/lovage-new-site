@@ -403,7 +403,7 @@ h6 {
   }
 }
 
-/* Touch interaction styles for mobile/tablet */
+/* Touch interaction styles for mobile/tablet - 2 taps: show overlay with opacity, then back to image */
 @media (hover: none) {
   .gallery-item {
     cursor: pointer;
@@ -411,7 +411,8 @@ h6 {
 
   .gallery-description {
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.25s ease;
+    background: rgba(20, 61, 44, 0.75);
   }
 
   .gallery-item.touch-active .gallery-description {
@@ -419,11 +420,11 @@ h6 {
   }
 
   .gallery-item.touch-active img {
-    opacity: 0;
+    opacity: 1;
   }
 
   .gallery-item img {
-    transition: opacity 0.3s ease;
+    transition: opacity 0.25s ease;
   }
 }
 
