@@ -645,40 +645,41 @@ function refreshFoodGallery() {
 
 // Add touch interactions for mobile/tablet devices (only one item shows info at a time)
 function addTouchInteractions(container) {
-  const galleryItems = container.querySelectorAll(".gallery-item");
+  const galleryItems = () => container.querySelectorAll(".gallery-item");
   const isTouchDevice = () => window.matchMedia("(hover: none)").matches;
+  let lastTouchEnd = 0;
+  let lastTouchedItem = null;
 
-  galleryItems.forEach((item) => {
-    let lastTouchEnd = 0;
+  // Delegate so taps on the overlay (when info is visible) still toggle the same item closed
+  container.addEventListener(
+    "touchend",
+    (e) => {
+      if (!isTouchDevice()) return;
+      const item = e.target.closest(".gallery-item");
+      if (!item) return;
+      e.preventDefault();
+      lastTouchEnd = Date.now();
+      lastTouchedItem = item;
+      galleryItems().forEach((other) => {
+        if (other !== item) other.classList.remove("touch-active");
+      });
+      item.classList.toggle("touch-active");
+    },
+    { passive: false }
+  );
 
-    // On touch devices, handle touchend and mark time so we ignore the synthetic click
-    item.addEventListener(
-      "touchend",
-      (e) => {
-        if (!isTouchDevice()) return;
-        e.preventDefault();
-        lastTouchEnd = Date.now();
-        // Close any other item that's showing info, then toggle this one
-        galleryItems.forEach((other) => {
-          if (other !== item) other.classList.remove("touch-active");
-        });
-        item.classList.toggle("touch-active");
-      },
-      { passive: false }
-    );
-
-    // Click: on touch devices ignore if we just handled a touch (avoids double toggle)
-    item.addEventListener("click", (e) => {
-      if (isTouchDevice() && Date.now() - lastTouchEnd < 400) {
-        e.preventDefault();
-        return;
-      }
-      if (!isTouchDevice()) {
-        galleryItems.forEach((other) => {
-          if (other !== item) other.classList.remove("touch-active");
-        });
-        item.classList.toggle("touch-active");
-      }
-    });
+  container.addEventListener("click", (e) => {
+    const item = e.target.closest(".gallery-item");
+    if (!item) return;
+    if (isTouchDevice() && lastTouchedItem === item && Date.now() - lastTouchEnd < 400) {
+      e.preventDefault();
+      return;
+    }
+    if (!isTouchDevice()) {
+      galleryItems().forEach((other) => {
+        if (other !== item) other.classList.remove("touch-active");
+      });
+      item.classList.toggle("touch-active");
+    }
   });
 }
